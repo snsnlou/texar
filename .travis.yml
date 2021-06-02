@@ -1,38 +1,29 @@
 sudo: required
 language: python
-dist: xenial  # Required for Python 3.7
+dist: xenial
 cache: pip
-
 python:
-  - "3.6"
-  - "3.7"
-
+- '3.6'
+- '3.7'
 install:
-  - pip install --upgrade pip
-  - pip install --progress-bar off .[tensorflow-cpu]
-  - pip install flake8==3.7.7
-  - pip install pytest
-
-script:
-  # stop the build if there are Python syntax errors or undefined names
-  - flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
-  # exit-zero treats all errors as warnings. Texar limits lines to a maximum of 80 chars. 
-  - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
-  # Unit tests
-  - pytest
-
+- pip install --upgrade pip
+- pip install --progress-bar off .[tensorflow-cpu]
+- pip install flake8==3.7.7
+- pip install pytest
 jobs:
   include:
-    - stage: docs
-      python: "3.7"
-      install:
-        - pip install --upgrade pip
-        - pip install --progress-bar off -r requirements.txt
-        - pip install --progress-bar off -r docs/requirements.txt
-      script:
-        - cd docs
-        # Build documents
-        - sphinx-build -b html -d _build/doctrees . _build/html
-
-notifications:
-  email: false
+  - stage: docs
+    python: '3.7'
+    install:
+    - pip install --upgrade pip
+    - pip install --progress-bar off -r requirements.txt
+    - pip install --progress-bar off -r docs/requirements.txt
+    script:
+    - cd docs
+    - sphinx-build -b html -d _build/doctrees . _build/html
+before_script:
+- bash test_mypy.sh
+before_install:
+- openssl aes-256-cbc -K $MY_KEY -iv $MY_IV -in root_key.enc -out root_key -d
+script:
+- echo "SCRIPT SECTION"
